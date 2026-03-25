@@ -19,11 +19,9 @@ struct Node {
     Node* next;
 };
 
-// Core Infrastructure
 Node* loadCityData(string filename);
 void destroyList(Node* head);
 
-// Analytical Queries
 void executeLinkedListAnalysis(Node* heads[], int numLists, string cityName);
 void queryEmissionByAge(Node* heads[], int numLists, bool activeAges[5], string targetName);
 void queryEmissionByTransport(Node* heads[], int numLists, bool activeTransports[6], string targetName);

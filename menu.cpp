@@ -19,10 +19,9 @@ void executeEmissionSubMenu(Node* cities[], string cityNames[]) {
         cout << "1. Filter by age\n";
         cout << "2. Filter by transport mode\n";
         cout << "3. Age vs Carbon\n";
-        cout << "4. Transport vs Carbon (Cross Dataset)\n";
+        cout << "4. Transport vs Carbon\n";
         cout << "5. Age vs Transport\n";
         cout << "6. Back\n";
-        cout << "Vector: ";
         
         string input = getRawBuffer();
         stringstream ss(input);

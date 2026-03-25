@@ -67,10 +67,11 @@ void executeLinkedListAnalysis(Node* heads[], int numLists, string cityName) {
     cout << "Total Carbon Emission for Selection: " << fixed << setprecision(2) << totalDatasetEmission << " kg CO2\n\n";
 
     cout << left << setw(15) << "Age Group" 
+         << setw(18) << "Total Residents"
          << setw(20) << "Preferred Mode" 
          << setw(20) << "Total Emission" 
          << setw(20) << "Avg Emission" << "\n";
-    cout << "------------------------------------------------------------------------\n";
+    cout << "---------------------------------------------------------------------------------------------\n";
 
     for (int i = 0; i < 5; i++) {
         if (ageGroupCounts[i] == 0) continue; 
@@ -87,8 +88,9 @@ void executeLinkedListAnalysis(Node* heads[], int numLists, string cityName) {
         double avgEmission = ageGroupEmissions[i] / ageGroupCounts[i];
 
         cout << left << setw(15) << ageLabels[i]
+             << setw(18) << ageGroupCounts[i]
              << setw(20) << getTransportName(preferredModeIndex)
-             << setw(20) << ageGroupEmissions[i]
+             << setw(20) << fixed << setprecision(2) << ageGroupEmissions[i]
              << setw(20) << avgEmission << "\n";
     }
 
@@ -147,9 +149,8 @@ void queryEmissionByAge(Node* heads[], int numLists, bool activeAges[5], string 
     string ageLabels[] = {"6-17", "18-25", "26-45", "46-60", "61-100"};
     string ageDescriptors[] = {"(School Students)", "(University Students)", "(Working Adults)", "(Older Adults)", "(Senior Citizens)"};
 
-    // Iterate across the requested demographics
     for (int ageTarget = 0; ageTarget < 5; ageTarget++) {
-        if (!activeAges[ageTarget]) continue; // Skip unrequested sectors entirely
+        if (!activeAges[ageTarget]) continue;
 
         double totalAgeEmission = 0.0;
         int transportCounts[6] = {0};
@@ -199,7 +200,6 @@ void queryEmissionByAge(Node* heads[], int numLists, bool activeAges[5], string 
         cout << "Total Emission for Age Group: " << fixed << setprecision(2) << totalAgeEmission << " kg CO2\n";
     }
     
-    // Asymmetric data drop
     if (totalCombinedEmission > 0) {
         cout << "\n>>> AGGREGATE FILTRATION EMISSION: " << fixed << setprecision(2) << totalCombinedEmission << " kg CO2 <<<\n";
     }
@@ -290,9 +290,8 @@ void executeCrossDatasetComparison(Node* cityA, Node* cityB, Node* cityC) {
         }
     }
 
-    cout << "\n========================================================================\n";
-    cout << " Q5(c): CROSS-DATASET DEMOGRAPHIC COMPARISON MATRIX\n";
-    cout << "========================================================================\n";
+    cout << " Age vs Carbon\n";
+    cout << "----------------------------------------------------------------------\n";
     cout << left << setw(15) << "Age Group" << setw(18) << "City A" << setw(18) << "City B" << setw(18) << "City C" << "\n";
     cout << "------------------------------------------------------------------------\n";
     
@@ -302,7 +301,6 @@ void executeCrossDatasetComparison(Node* cityA, Node* cityB, Node* cityC) {
              << setw(18) << ageGroupEmissions[1][i]
              << setw(18) << ageGroupEmissions[2][i] << "\n";
     }
-    cout << "========================================================================\n";
 }
 
 void executeCrossDatasetTransportComparison(Node* cityA, Node* cityB, Node* cityC) {
@@ -321,9 +319,8 @@ void executeCrossDatasetTransportComparison(Node* cityA, Node* cityB, Node* city
         }
     }
 
-    cout << "\n========================================================================\n";
-    cout << " CROSS-DATASET TRANSPORT COMPARISON MATRIX\n";
-    cout << "========================================================================\n";
+    cout << " Transport vs Carbon\n";
+    cout << "----------------------------------------------------------------------\n";
     cout << left << setw(15) << "Transport Mode" << setw(18) << "City A" << setw(18) << "City B" << setw(18) << "City C" << "\n";
     cout << "------------------------------------------------------------------------\n";
     
@@ -333,13 +330,13 @@ void executeCrossDatasetTransportComparison(Node* cityA, Node* cityB, Node* city
              << setw(18) << transportEmissions[1][i]
              << setw(18) << transportEmissions[2][i] << "\n";
     }
-    cout << "========================================================================\n";
 }
 
 void executeAgeVsTransportComparison(Node* cityA, Node* cityB, Node* cityC) {
     Node* cities[] = {cityA, cityB, cityC};
     
-    double ageTransportEmissions[5][6] = {0.0}; 
+    int ageTransportCounts[5][6] = {0}; 
+    double ageTransportEmissions[5][6] = {0.0};
     string ageLabels[] = {"6-17", "18-25", "26-45", "46-60", "61-100"};
 
     for (int c = 0; c < 3; c++) {
@@ -355,29 +352,34 @@ void executeAgeVsTransportComparison(Node* cityA, Node* cityB, Node* cityC) {
             int tIndex = getTransportIndex(current->data.transportMode);
 
             if (aGroup != -1 && tIndex != -1) {
+                ageTransportCounts[aGroup][tIndex]++;
                 ageTransportEmissions[aGroup][tIndex] += (current->data.dailyDistance * current->data.emissionFactor * current->data.avgDaysPerMonth);
             }
             current = current->next;
         }
     }
 
-    cout << "\n====================================================================================================\n";
-    cout << " DEMOGRAPHIC VS TRANSPORT EMISSION MATRIX (COMBINED)\n";
-    cout << "====================================================================================================\n";
+    cout << " Age vs Transport (Headcount & Emissions)\n";
+    cout << "--------------------------------------------------------------------------------------------------------------------------------\n";
     cout << left << setw(15) << "Age Group";
     for (int i = 0; i < 6; i++) {
-        cout << setw(14) << getTransportName(i);
+        cout << setw(20) << getTransportName(i);
     }
-    cout << "\n----------------------------------------------------------------------------------------------------\n";
+    cout << "\n--------------------------------------------------------------------------------------------------------------------------------\n";
     
     for (int i = 0; i < 5; i++) {
         cout << left << setw(15) << ageLabels[i];
         for (int j = 0; j < 6; j++) {
-            cout << setw(14) << fixed << setprecision(2) << ageTransportEmissions[i][j];
+            stringstream cell;
+            if (ageTransportCounts[i][j] > 0) {
+                cell << ageTransportCounts[i][j] << " (" << fixed << setprecision(1) << ageTransportEmissions[i][j] << ")";
+            } else {
+                cell << "0";
+            }
+            cout << left << setw(20) << cell.str();
         }
         cout << "\n";
     }
-    cout << "====================================================================================================\n";
 }
 
 void destroyList(Node* head) {
