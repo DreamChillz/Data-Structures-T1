@@ -2,11 +2,12 @@
 #include <string>
 #include <sstream>
 #include "linked_list.h"
+#include "array.h"
 
 using namespace std;
 
 string getRawBuffer() {
-    string line;
+    string line; 
     getline(cin, line);
     if (line.empty()) getline(cin, line); 
     return line;
@@ -105,7 +106,33 @@ void executeCitySelection(int dsMode, int operationMode, Node* cityA, Node* city
         }
 
         if (dsMode == 1) {
-            cout << "\nnot implemented yet\n";
+            static Resident cityA_Arr[MAX], cityB_Arr[MAX], cityC_Arr[MAX];
+            Resident* cityPtrs[3] = {nullptr, nullptr, nullptr};
+            int counts[3] = {0, 0, 0};
+            string combinedName = "";
+
+            if (activeNames[0] != "") { 
+                counts[0] = loadCSV("datasets/dataset1-cityA.csv", cityA_Arr); 
+                cityPtrs[0] = cityA_Arr; 
+                combinedName += "CityA "; 
+            }
+            if (activeNames[1] != "") { 
+                counts[1] = loadCSV("datasets/dataset2-cityB.csv", cityB_Arr); 
+                cityPtrs[1] = cityB_Arr; 
+                combinedName += "CityB "; 
+            }
+            if (activeNames[2] != "") { 
+                counts[2] = loadCSV("datasets/dataset3-cityC.csv", cityC_Arr); 
+                cityPtrs[2] = cityC_Arr; 
+                combinedName += "CityC "; 
+            }
+
+            // 3. Direct to the correct operation
+            if (operationMode == 1 || operationMode == 2) {
+                executeArrayAnalysis(cityPtrs, counts, 3, combinedName);
+            } else {
+                cout << "\nArray Sorting/Performance not implemented yet.\n";
+            }
         } else if (dsMode == 2) {
             if (operationMode == 1) {
                 Node* compressedTargets[3];

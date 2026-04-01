@@ -19,6 +19,9 @@ struct Node {
     Node* next;
 };
 
+int getTransportIndex(string type);
+string getTransportName(int index);
+
 Node* loadCityData(string filename);
 void destroyList(Node* head);
 
