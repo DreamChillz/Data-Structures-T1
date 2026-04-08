@@ -22,5 +22,8 @@ double calculateEmission(Resident r);
 void executeArrayAnalysis(Resident* cities[], int counts[], int numCities, string cityName);
 void queryArrayEmissionByAge(Resident* cities[], int counts[], int numCities, bool activeAges[5]);
 void queryArrayEmissionByTransport(Resident* cities[], int counts[], int numCities, bool activeTransports[6]);
-
+void bubbleSortArray(Resident arr[], int size, int sortBy);
+void insertionSortArray(Resident arr[], int size, int sortBy);
+void linearSearchArray(Resident arr[], int size, int searchBy, double minVal, double maxVal, string targetStr);
+int binarySearchArray(Resident arr[], int size, int searchBy, double minVal, double maxVal, string targetStr);
 #endif
