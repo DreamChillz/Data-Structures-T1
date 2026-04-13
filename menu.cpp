@@ -230,7 +230,11 @@ void executePerformanceComparison(Node* cityA, Node* cityB, Node* cityC) {
 
             // Benchmark Linked List
             auto startLL = high_resolution_clock::now();
-            // TODO: Call teammate's bubble or insertion sort based on sortMethod!
+            if (sortMethod == 1) {
+                bubbleSortLinkedList(combinedLLHead, sortBy);
+            } else {
+                insertionSortLinkedList(combinedLLHead, sortBy);
+            }            
             auto stopLL = high_resolution_clock::now();
             auto llTime = duration_cast<microseconds>(stopLL - startLL).count();
 
@@ -300,7 +304,6 @@ void executePerformanceComparison(Node* cityA, Node* cityB, Node* cityC) {
             if (searchMethod == 2) {
                 cout << "\nSorting " << totalSize << " records invisibly to prepare for Binary Search...\n";
                 insertionSortArray(combinedArr, totalSize, searchBy);
-                // TODO: Sort the teammate's Linked list too!
             }
 
             cout << "Executing Searches...\n";
@@ -316,16 +319,21 @@ void executePerformanceComparison(Node* cityA, Node* cityB, Node* cityC) {
             }
             auto stopArr = high_resolution_clock::now();
             auto arrTime = duration_cast<microseconds>(stopArr - startArr).count();
+
             // Benchmark Linked List
             auto startLL = high_resolution_clock::now();
-            // TODO: Call teammate's linear or binary search based on searchMethod!
+            if (searchMethod == 1) {
+                linearSearchLinkedList(combinedLLHead, searchBy, minVal, maxVal, targetStr);
+            } else {
+                linearSearchLinkedList(combinedLLHead, searchBy, minVal, maxVal, targetStr);
+            }
             auto stopLL = high_resolution_clock::now();
             auto llTime = duration_cast<microseconds>(stopLL - startLL).count();
-
+          
             // Print Comparison Table
             cout << "\n================ TASK 7: SEARCHING RESULTS ===============\n";
             if (searchMethod == 2) {
-                if (arrIndex >0) cout << "Result: Match Found Successfully!\n";
+                if (arrIndex >= 0) cout << "Result: Match Found Successfully!\n";
                 else cout << "Result: No Match Found in Dataset.\n";
             }
 

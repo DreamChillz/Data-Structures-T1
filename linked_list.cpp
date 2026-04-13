@@ -390,3 +390,83 @@ void destroyList(Node* head) {
         current = nextNode;
     }
 }
+
+void bubbleSortLinkedList(Node* head, int sortBy) {
+    if (!head) return;
+
+    bool swapped;
+    Node* ptr1;
+    Node* lptr = nullptr;
+
+    do {
+        swapped = false;
+        ptr1 = head;
+
+        while (ptr1->next != lptr) {
+            bool needSwap = false;
+
+            if (sortBy == 1 && ptr1->data.age > ptr1->next->data.age) needSwap = true;
+            else if (sortBy == 2 && ptr1->data.dailyDistance > ptr1->next->data.dailyDistance) needSwap = true;
+            else if (sortBy == 3 && ptr1->data.emissionFactor > ptr1->next->data.emissionFactor) needSwap = true;
+            else if (sortBy == 4 && ptr1->data.avgDaysPerMonth > ptr1->next->data.avgDaysPerMonth) needSwap = true;
+            else if (sortBy == 5 && ptr1->data.transportMode > ptr1->next->data.transportMode) needSwap = true;
+
+            if (needSwap) {
+                swap(ptr1->data, ptr1->next->data);
+                swapped = true;
+            }
+            ptr1 = ptr1->next;
+        }
+        lptr = ptr1;
+    } while (swapped);
+}
+
+void insertionSortLinkedList(Node*& head, int sortBy) {
+    if (!head || !head->next) return;
+
+    Node* sorted = nullptr;
+    Node* current = head;
+
+    while (current != nullptr) {
+        Node* next = current->next;
+
+        if (!sorted || current->data.age < sorted->data.age) {
+            current->next = sorted;
+            sorted = current;
+        } else {
+            Node* temp = sorted;
+            while (temp->next &&
+                  ((sortBy == 1 && temp->next->data.age < current->data.age))) {
+                temp = temp->next;
+            }
+            current->next = temp->next;
+            temp->next = current;
+        }
+        current = next;
+    }
+    head = sorted;
+}
+
+void linearSearchLinkedList(Node* head, int searchBy, double minVal, double maxVal, string targetStr) {
+    Node* current = head;
+    int count = 0;
+
+    while (current != nullptr) {
+        bool match = false;
+
+        if (searchBy == 1 && current->data.age >= minVal && current->data.age <= maxVal) match = true;
+        else if (searchBy == 2 && current->data.dailyDistance >= minVal && current->data.dailyDistance <= maxVal) match = true;
+        else if (searchBy == 3 && current->data.emissionFactor >= minVal && current->data.emissionFactor <= maxVal) match = true;
+        else if (searchBy == 4 && current->data.avgDaysPerMonth >= minVal && current->data.avgDaysPerMonth <= maxVal) match = true;
+        else if (searchBy == 5 && current->data.transportMode == targetStr) match = true;
+
+        if (match) {
+            cout << current->data.residentID << " " << current->data.age << endl;
+            count++;
+        }
+
+        current = current->next;
+    }
+
+    cout << "Total Found: " << count << endl;
+}
