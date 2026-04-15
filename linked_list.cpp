@@ -582,6 +582,7 @@ void insertionSortLinkedList(Node *&head, int sortBy)
     }
     head = sorted;
 }
+
 void linearSearchLinkedList(Node *head, int searchBy, double minVal, double maxVal, string targetStr)
 {
     Node *current = head;
