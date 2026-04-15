@@ -402,6 +402,8 @@ void handleSearchingBenchmark(Resident combinedArr[], Node *cityA, Node *cityB, 
         linearSearchLinkedList(combinedLLHead, searchBy, minVal, maxVal, targetStr);
         auto stopLL = high_resolution_clock::now();
 
+        printArrayResults(workingArr, totalSize, searchBy, minVal, maxVal, targetStr);
+
         // Results Table
         cout << "\n================ TASK 7: SEARCHING RESULTS ===============\n";
         cout << left << setw(20) << "Data Structure" << setw(25) << "Execution Time (us)" << endl;

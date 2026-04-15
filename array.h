@@ -26,4 +26,6 @@ void bubbleSortArray(Resident arr[], int size, int sortBy);
 void insertionSortArray(Resident arr[], int size, int sortBy);
 int linearSearchArray(Resident arr[], int size, int searchBy, double minVal, double maxVal, string targetStr);
 int binarySearchArray(Resident arr[], int size, int searchBy, double minVal, double maxVal, string targetStr);
+void printArrayResults(Resident arr[], int size, int searchBy, double minVal, double maxVal, string targetStr);
+
 #endif

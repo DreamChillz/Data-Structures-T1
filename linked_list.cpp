@@ -609,8 +609,6 @@ void linearSearchLinkedList(Node *head, int searchBy, double minVal, double maxV
 
         current = current->next;
     }
-
-    cout << "Verify Total Found: " << count << endl;
 }
 
 // Instead of splicing the real lists, build a fresh merged list by copying node data
