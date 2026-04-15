@@ -363,7 +363,7 @@ void handleSearchingBenchmark(Resident combinedArr[], Node *cityA, Node *cityB, 
                 continue;
             }
         }
-        cout << "\nSelect Searching Algorithm:\n1. Linear Search\n2. Binary Search\nChoice: ";
+        cout << "\nSelect Searching Algorithm:\n1. Linear Search\n2. Binary Search (Array Only)\nChoice: ";
         string methodInput = getRawBuffer();
         stringstream methodSS(methodInput);
 
@@ -382,24 +382,24 @@ void handleSearchingBenchmark(Resident combinedArr[], Node *cityA, Node *cityB, 
             continue;
         }
 
-        if (searchMethod == 2)
-        {
-            cout << "\nSorting records invisibly for Binary Search...\n";
-            insertionSortArray(workingArr, totalSize, searchBy);
-        }
-
         Node *combinedLLHead = buildMergedList(cityA, cityB, cityC);
 
         // Benchmark Array
         auto startArr = high_resolution_clock::now();
         int arrCount;
+        string searchTypeArr = "";
 
         if (searchMethod == 1)
         {
+            searchTypeArr = "Linear Search";
             arrCount = linearSearchArray(workingArr, totalSize, searchBy, minVal, maxVal, targetStr);
         }
-        else
+        else if (searchMethod == 2)
         {
+            searchTypeArr = "Binary Search";
+            cout << "\nBinary Search selected (Array only).\nSorting data...\n";
+            insertionSortArray(workingArr, totalSize, searchBy);
+
             arrCount = binarySearchArray(workingArr, totalSize, searchBy, minVal, maxVal, targetStr);
         }
         auto stopArr = high_resolution_clock::now();
@@ -413,11 +413,36 @@ void handleSearchingBenchmark(Resident combinedArr[], Node *cityA, Node *cityB, 
 
         // Results Table
         cout << "\n================ TASK 7: SEARCHING RESULTS ===============\n";
-        cout << left << setw(20) << "Data Structure" << setw(25) << "Execution Time (us)" << setw(25) << "Memory Usage (Bytes)" << endl;
+        cout << left << setw(20) << "Data Structure"
+             << setw(25) << "Search Type"
+             << setw(25) << "Execution Time (us)"
+             << setw(25) << "Memory Usage (Bytes)" << endl;
+
         cout << "----------------------------------------------------------------------\n";
-        cout << left << setw(20) << "Array" << setw(25) << duration_cast<microseconds>(stopArr - startArr).count() << setw(25) << arrayMemory << endl;
-        cout << left << setw(20) << "Linked List" << setw(25) << duration_cast<microseconds>(stopLL - startLL).count() << setw(25) << linkedListMemory << endl;
+
+        cout << left << setw(20) << "Array"
+             << setw(25) << searchTypeArr
+             << setw(25) << duration_cast<microseconds>(stopArr - startArr).count()
+             << setw(25) << arrayMemory << endl;
+
+        // LINKED LIST RESULT (Pre-calculate strings using ternary operators to avoid inline ifs)
+        bool isLLSupported = (searchMethod == 1); // Only method 1 (Linear) is supported for LL
+
+        string llSearchType = isLLSupported ? "Linear Search" : "N/A";
+        string llTime = isLLSupported ? to_string(duration_cast<microseconds>(stopLL - startLL).count()) : "N/A";
+        string llMem = isLLSupported ? to_string(linkedListMemory) : "N/A";
+
+        cout << left << setw(20) << "Linked List"
+             << setw(25) << llSearchType
+             << setw(25) << llTime
+             << setw(25) << llMem << endl;
+
         cout << "----------------------------------------------------------------------\n";
+
+        if (!isLLSupported)
+        {
+            cout << "\n*" << searchTypeArr << " not supported on Linked List\n";
+        }
 
         destroyList(combinedLLHead);
     }
