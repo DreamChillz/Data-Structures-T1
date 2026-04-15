@@ -19,7 +19,9 @@ struct Resident {
 int loadCSV(string filename, Resident arr[]);
 double calculateEmission(Resident r);
 
+
 void executeArrayAnalysis(Resident* cities[], int counts[], int numCities, string cityName);
+void executeArrayEmissionSubMenu(Resident* cities[], int counts[], int numCities);
 void queryArrayEmissionByAge(Resident* cities[], int counts[], int numCities, bool activeAges[5]);
 void queryArrayEmissionByTransport(Resident* cities[], int counts[], int numCities, bool activeTransports[6]);
 void bubbleSortArray(Resident arr[], int size, int sortBy);

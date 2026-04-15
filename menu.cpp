@@ -80,6 +80,8 @@ void executeEmissionSubMenu(Node* cities[], string cityNames[]) {
     }
 }
 
+
+
 void executeCitySelection(int dsMode, int operationMode, Node* cityA, Node* cityB, Node* cityC) {
     while (true) {
         cout << "\n--- MOUNT TARGET DATASETS ---\n";
@@ -131,10 +133,11 @@ void executeCitySelection(int dsMode, int operationMode, Node* cityA, Node* city
             }
 
             // Direct to the correct operation
-            if (operationMode == 1 || operationMode == 2) {
+            if (operationMode == 1 ) {
                 executeArrayAnalysis(cityPtrs, counts, 3, combinedName);
-            } else {
-                cout << "\nArray Sorting/Performance not implemented yet.\n";
+            } 
+            else if (operationMode == 2) {
+                executeArrayEmissionSubMenu(cityPtrs, counts, 3);
             }
         } else if (dsMode == 2) {
             if (operationMode == 1) {
@@ -366,7 +369,7 @@ void executeOperationSelection(int dsMode, Node* cityA, Node* cityB, Node* cityC
         ss >> taskChoice;
 
         if (taskChoice == 3) return; 
-        if (taskChoice >= 1 && taskChoice <= 2) executeCitySelection(dsMode, taskChoice, cityA, cityB, cityC);
+        if (taskChoice == 1 || taskChoice == 2) executeCitySelection(dsMode, taskChoice, cityA, cityB, cityC);
         else cout << "\nplease select in range\n";
     }
 }
