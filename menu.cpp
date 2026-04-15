@@ -99,8 +99,6 @@ void executeEmissionSubMenu(Node *cities[], string cityNames[])
     }
 }
 
-
-
 void executeCitySelection(int dsMode, int operationMode, Node *cityA, Node *cityB, Node *cityC)
 {
     while (true)
@@ -180,11 +178,12 @@ void executeCitySelection(int dsMode, int operationMode, Node *cityA, Node *city
             }
 
             // Direct to the correct operation
-            if (operationMode == 1 )
+            if (operationMode == 1)
             {
                 executeArrayAnalysis(cityPtrs, counts, 3, combinedName);
-            } 
-            else if (operationMode == 2) {
+            }
+            else if (operationMode == 2)
+            {
                 executeArrayEmissionSubMenu(cityPtrs, counts, 3);
             }
         }
@@ -363,7 +362,7 @@ void handleSearchingBenchmark(Resident combinedArr[], Node *cityA, Node *cityB, 
                 continue;
             }
         }
-        cout << "\nSelect Searching Algorithm:\n1. Linear Search\n2. Binary Search (Array Only)\nChoice: ";
+        cout << "\nSelect Searching Algorithm:\n1. Linear Search\n2. Binary Search (Array Only)\n3. Jump Search\nChoice: ";
         string methodInput = getRawBuffer();
         stringstream methodSS(methodInput);
 
@@ -376,7 +375,7 @@ void handleSearchingBenchmark(Resident combinedArr[], Node *cityA, Node *cityB, 
         }
 
         // validation
-        if (!(methodSS >> searchMethod) || searchMethod < 1 || searchMethod > 2)
+        if (!(methodSS >> searchMethod) || searchMethod < 1 || searchMethod > 3)
         {
             cout << "Number not in range\n";
             continue;
@@ -384,15 +383,21 @@ void handleSearchingBenchmark(Resident combinedArr[], Node *cityA, Node *cityB, 
 
         Node *combinedLLHead = buildMergedList(cityA, cityB, cityC);
 
-        // Benchmark Array
-        auto startArr = high_resolution_clock::now();
+        // Benchmarking variables
         int arrCount;
         string searchTypeArr = "";
+        auto startArr = high_resolution_clock::now();
+        auto stopArr = high_resolution_clock::now();
+        auto startLL = high_resolution_clock::now();
+        auto stopLL = high_resolution_clock::now();
 
+        // Benchmark Array
         if (searchMethod == 1)
         {
             searchTypeArr = "Linear Search";
+            startArr = high_resolution_clock::now();
             arrCount = linearSearchArray(workingArr, totalSize, searchBy, minVal, maxVal, targetStr);
+            stopArr = high_resolution_clock::now();
         }
         else if (searchMethod == 2)
         {
@@ -400,14 +405,35 @@ void handleSearchingBenchmark(Resident combinedArr[], Node *cityA, Node *cityB, 
             cout << "\nBinary Search selected (Array only).\nSorting data...\n";
             insertionSortArray(workingArr, totalSize, searchBy);
 
+            startArr = high_resolution_clock::now();
             arrCount = binarySearchArray(workingArr, totalSize, searchBy, minVal, maxVal, targetStr);
+            stopArr = high_resolution_clock::now();
         }
-        auto stopArr = high_resolution_clock::now();
+        else if (searchMethod == 3)
+        {
+            searchTypeArr = "Jump Search";
+            insertionSortArray(workingArr, totalSize, searchBy);
+            startArr = high_resolution_clock::now();
+            arrCount = jumpSearchArray(workingArr, totalSize, searchBy, minVal, maxVal, targetStr);
+            stopArr = high_resolution_clock::now();
+        }
 
         // Benchmark Linked List
-        auto startLL = high_resolution_clock::now();
-        linearSearchLinkedList(combinedLLHead, searchBy, minVal, maxVal, targetStr);
-        auto stopLL = high_resolution_clock::now();
+        if (searchMethod == 1)
+        {
+            startLL = high_resolution_clock::now();
+            linearSearchLinkedList(combinedLLHead, searchBy, minVal, maxVal, targetStr);
+            stopLL = high_resolution_clock::now();
+        }
+        else if (searchMethod == 3)
+        {
+            cout << "\nJump Search selected.\nSorting data...\n";
+            insertionSortLinkedList(combinedLLHead, searchBy); // sort first for jump search
+
+            startLL = high_resolution_clock::now();
+            jumpSearchLinkedList(combinedLLHead, searchBy, minVal, maxVal, targetStr);
+            stopLL = high_resolution_clock::now();
+        }
 
         printArrayResults(workingArr, totalSize, searchBy, minVal, maxVal, targetStr);
 
@@ -426,9 +452,8 @@ void handleSearchingBenchmark(Resident combinedArr[], Node *cityA, Node *cityB, 
              << setw(25) << arrayMemory << endl;
 
         // LINKED LIST RESULT (Pre-calculate strings using ternary operators to avoid inline ifs)
-        bool isLLSupported = (searchMethod == 1); // Only method 1 (Linear) is supported for LL
-
-        string llSearchType = isLLSupported ? "Linear Search" : "N/A";
+        bool isLLSupported = (searchMethod == 1 || searchMethod == 3); // Linear and Jump supported
+        string llSearchType = isLLSupported ? (searchMethod == 1 ? "Linear Search" : "Jump Search") : "N/A";
         string llTime = isLLSupported ? to_string(duration_cast<microseconds>(stopLL - startLL).count()) : "N/A";
         string llMem = isLLSupported ? to_string(linkedListMemory) : "N/A";
 
@@ -440,9 +465,7 @@ void handleSearchingBenchmark(Resident combinedArr[], Node *cityA, Node *cityB, 
         cout << "----------------------------------------------------------------------\n";
 
         if (!isLLSupported)
-        {
-            cout << "\n*" << searchTypeArr << " not supported on Linked List\n";
-        }
+            cout << "\n*Binary Search not supported on Linked List (no random access)\n";
 
         destroyList(combinedLLHead);
     }

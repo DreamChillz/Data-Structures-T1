@@ -4,6 +4,7 @@
 #include <sstream>
 #include <iomanip>
 #include <algorithm>
+#include <cmath>
 
 using namespace std;
 
@@ -641,4 +642,79 @@ Node *buildMergedList(Node *cityA, Node *cityB, Node *cityC)
         }
     }
     return mergedHead;
+}
+
+void jumpSearchLinkedList(Node *head, int searchBy, double minVal, double maxVal, string targetStr)
+{
+    if (!head)
+        return;
+
+    // Count total nodes
+    int n = 0;
+    Node *cur = head;
+    while (cur)
+    {
+        n++;
+        cur = cur->next;
+    }
+
+    int step = (int)std::sqrt((double)n);
+    int count = 0;
+
+    Node *prev = head;
+    Node *curr = head;
+    int pos = 0;
+
+    // Jump phase: advance by `step` until we overshoot maxVal or reach end
+    while (curr != nullptr)
+    {
+        double val = 0.0;
+        string sval = "";
+
+        if (searchBy == 1)
+            val = curr->data.age;
+        else if (searchBy == 2)
+            val = curr->data.dailyDistance;
+        else if (searchBy == 3)
+            val = curr->data.emissionFactor;
+        else if (searchBy == 4)
+            val = curr->data.avgDaysPerMonth;
+        else if (searchBy == 5)
+            sval = curr->data.transportMode;
+
+        bool overshot = (searchBy == 5) ? (sval > targetStr) : (val > maxVal);
+        if (overshot)
+            break;
+
+        prev = curr;
+
+        // Advance by step
+        for (int i = 0; i < step && curr != nullptr; i++)
+        {
+            curr = curr->next;
+            pos++;
+        }
+    }
+
+    // Linear phase: scan from prev up to curr (or end)
+    Node *scan = prev;
+    while (scan != nullptr && scan != curr)
+    {
+        bool match = false;
+
+        if (searchBy == 1 && scan->data.age >= minVal && scan->data.age <= maxVal)
+            match = true;
+        else if (searchBy == 2 && scan->data.dailyDistance >= minVal && scan->data.dailyDistance <= maxVal)
+            match = true;
+        else if (searchBy == 3 && scan->data.emissionFactor >= minVal && scan->data.emissionFactor <= maxVal)
+            match = true;
+        else if (searchBy == 4 && scan->data.avgDaysPerMonth >= minVal && scan->data.avgDaysPerMonth <= maxVal)
+            match = true;
+        else if (searchBy == 5 && scan->data.transportMode == targetStr)
+            match = true;
+
+        if (match)
+            count++;
+        scan = scan->next;
+    }
 }

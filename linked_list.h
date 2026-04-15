@@ -38,5 +38,6 @@ void executeAgeVsTransportComparison(Node *cityA, Node *cityB, Node *cityC);
 void bubbleSortLinkedList(Node *head, int sortBy);
 void insertionSortLinkedList(Node *&head, int sortBy);
 void linearSearchLinkedList(Node *head, int searchBy, double minVal, double maxVal, string targetStr);
+void jumpSearchLinkedList(Node *head, int searchBy, double minVal, double maxVal, string targetStr);
 
 #endif
