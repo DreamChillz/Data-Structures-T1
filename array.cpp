@@ -7,26 +7,33 @@
 #include <algorithm>
 #include <utility>
 
-
 using namespace std;
 
 std::string getRawBuffer();
 
-int loadCSV(string filename, Resident arr[]) {
+std::string getRawBuffer();
+
+int loadCSV(string filename, Resident arr[])
+{
     ifstream file(filename);
-    if (!file.is_open()) return 0;
+    if (!file.is_open())
+        return 0;
 
     string line, token;
-    getline(file, line); 
+    getline(file, line);
     int i = 0;
-    while (getline(file, line) && i < MAX) {
+    while (getline(file, line) && i < MAX)
+    {
         stringstream ss(line);
         getline(ss, arr[i].id, ',');
-        getline(ss, token, ','); arr[i].age = stoi(token);
+        getline(ss, token, ',');
+        arr[i].age = stoi(token);
         getline(ss, arr[i].transport, ',');
-        getline(ss, token, ','); arr[i].distance = stod(token);
-        getline(ss, token, ','); arr[i].factor = stod(token);
-        getline(ss, token, ','); 
+        getline(ss, token, ',');
+        arr[i].distance = stod(token);
+        getline(ss, token, ',');
+        arr[i].factor = stod(token);
+        getline(ss, token, ',');
         token.erase(remove(token.begin(), token.end(), '\r'), token.end());
         arr[i].days = stoi(token);
         i++;
@@ -34,24 +41,33 @@ int loadCSV(string filename, Resident arr[]) {
     return i;
 }
 
-double calculateEmission(Resident r) {
+double calculateEmission(Resident r)
+{
     return r.distance * r.factor * r.days;
 }
 
-inline int getTransportIndex_Array(string mode) {
-     if (mode == "Car") return 0;
-     if (mode == "Bus") return 1;
-    if (mode == "Bicycle") return 2;
-     if (mode == "Walking") return 3;
-     if (mode == "School Bus") return 4;
-     if (mode == "Carpool") return 5;
-     return -1;
+inline int getTransportIndex_Array(string mode)
+{
+    if (mode == "Car")
+        return 0;
+    if (mode == "Bus")
+        return 1;
+    if (mode == "Bicycle")
+        return 2;
+    if (mode == "Walking")
+        return 3;
+    if (mode == "School Bus")
+        return 4;
+    if (mode == "Carpool")
+        return 5;
+    return -1;
 }
 
-inline string getTransportName_Array(int index) {
-     string modes[] = {"Car", "Bus", "Bicycle", "Walking", "School Bus", "Carpool"};
-     return modes[index];
- }
+inline string getTransportName_Array(int index)
+{
+    string modes[] = {"Car", "Bus", "Bicycle", "Walking", "School Bus", "Carpool"};
+    return modes[index];
+}
 
 void executeArrayAnalysis(Resident* cities[], int counts[], int numCities, string cityName) {
     int transportCounts[5][6] = {0};
@@ -75,11 +91,16 @@ void executeArrayAnalysis(Resident* cities[], int counts[], int numCities, strin
             double emission = calculateEmission(r);
 
             int aGrp = -1;
-            if (r.age >= 6 && r.age <= 17) aGrp = 0;
-            else if (r.age <= 25) aGrp = 1;
-            else if (r.age <= 45) aGrp = 2;
-            else if (r.age <= 60) aGrp = 3;
-            else if (r.age <= 100) aGrp = 4;
+            if (r.age >= 6 && r.age <= 17)
+                aGrp = 0;
+            else if (r.age <= 25)
+                aGrp = 1;
+            else if (r.age <= 45)
+                aGrp = 2;
+            else if (r.age <= 60)
+                aGrp = 3;
+            else if (r.age <= 100)
+                aGrp = 4;
 
             int tIdx = getTransportIndex_Array(r.transport); // Fixed function name
 
@@ -274,46 +295,66 @@ void queryArrayEmissionByTransport(Resident* cities[], int counts[], int numCiti
 // Task 6 bubble sort
 // sortBy: 1 = Age, 2 = Distance, 3 = Carbon Emission
 // Task 6: Bubble Sort
-void bubbleSortArray(Resident arr[], int size, int sortBy) {
-    for (int i = 0; i < size - 1; i++) {
-        for (int j = 0; j < size - i - 1; j++) {
+void bubbleSortArray(Resident arr[], int size, int sortBy)
+{
+    for (int i = 0; i < size - 1; i++)
+    {
+        for (int j = 0; j < size - i - 1; j++)
+        {
             bool needToSwap = false;
 
-            if (sortBy == 1 && arr[j].age > arr[j + 1].age) needToSwap = true;
-            else if (sortBy == 2 && arr[j].distance > arr[j + 1].distance) needToSwap = true;
-            else if (sortBy == 3 && arr[j].factor > arr[j + 1].factor) needToSwap = true; // Now uses raw factor!
-            else if (sortBy == 4 && arr[j].days > arr[j + 1].days) needToSwap = true;
-            else if (sortBy == 5 && arr[j].transport > arr[j + 1].transport) needToSwap = true;
+            if (sortBy == 1 && arr[j].age > arr[j + 1].age)
+                needToSwap = true;
+            else if (sortBy == 2 && arr[j].distance > arr[j + 1].distance)
+                needToSwap = true;
+            else if (sortBy == 3 && arr[j].factor > arr[j + 1].factor)
+                needToSwap = true; // Now uses raw factor!
+            else if (sortBy == 4 && arr[j].days > arr[j + 1].days)
+                needToSwap = true;
+            else if (sortBy == 5 && arr[j].transport > arr[j + 1].transport)
+                needToSwap = true;
 
-            if (needToSwap) {
+            if (needToSwap)
+            {
                 Resident temp = arr[j];
-                arr[j] = arr[j+1];
-                arr[j+1] = temp;
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
             }
         }
     }
 }
 
 // Task 6: Insertion Sort
-void insertionSortArray(Resident arr[], int size, int sortBy) {
-    for (int i = 1; i < size; i++) {
+void insertionSortArray(Resident arr[], int size, int sortBy)
+{
+    for (int i = 1; i < size; i++)
+    {
         Resident key = arr[i];
         int j = i - 1;
         bool keepMoving = false;
 
-        while (j >= 0) {
+        while (j >= 0)
+        {
             keepMoving = false;
-            if (sortBy == 1 && arr[j].age > key.age) keepMoving = true;
-            else if (sortBy == 2 && arr[j].distance > key.distance) keepMoving = true;
-            else if (sortBy == 3 && arr[j].factor > key.factor) keepMoving = true; // Now uses raw factor!
-            else if (sortBy == 4 && arr[j].days > key.days) keepMoving = true;
-            else if (sortBy == 5 && arr[j].transport > key.transport) keepMoving = true;
+            if (sortBy == 1 && arr[j].age > key.age)
+                keepMoving = true;
+            else if (sortBy == 2 && arr[j].distance > key.distance)
+                keepMoving = true;
+            else if (sortBy == 3 && arr[j].factor > key.factor)
+                keepMoving = true; // Now uses raw factor!
+            else if (sortBy == 4 && arr[j].days > key.days)
+                keepMoving = true;
+            else if (sortBy == 5 && arr[j].transport > key.transport)
+                keepMoving = true;
 
-            if (keepMoving) {
+            if (keepMoving)
+            {
                 arr[j + 1] = arr[j];
                 j = j - 1;
-            } else {
-                break; 
+            }
+            else
+            {
+                break;
             }
         }
         arr[j + 1] = key;
@@ -321,118 +362,168 @@ void insertionSortArray(Resident arr[], int size, int sortBy) {
 }
 
 // Task 7: Linear Search (Range-Based)
-void linearSearchArray(Resident arr[], int size, int searchBy, double minVal, double maxVal, string targetStr) {
+int linearSearchArray(Resident arr[], int size, int searchBy, double minVal, double maxVal, string targetStr)
+{
     int matchCount = 0;
-    cout << "\n" << left << setw(15) << "Resident ID" << setw(10) << "Age" 
-         << setw(15) << "Transport" << setw(15) << "Distance" 
-         << setw(15) << "Factor" << setw(15) << "Days" << endl;
-    cout << "----------------------------------------------------------------------------------\n";
 
-    for (int i = 0; i < size; i++) {
-        bool isMatch = false;
+    for (int i = 0; i < size; i++)
+    {
+        bool match = false;
 
-        if (searchBy == 1 && arr[i].age >= minVal && arr[i].age <= maxVal) isMatch = true;
-        else if (searchBy == 2 && arr[i].distance >= minVal && arr[i].distance <= maxVal) isMatch = true;
-        else if (searchBy == 3 && arr[i].factor >= minVal && arr[i].factor <= maxVal) isMatch = true;
-        else if (searchBy == 4 && arr[i].days >= minVal && arr[i].days <= maxVal) isMatch = true;
-        else if (searchBy == 5 && arr[i].transport == targetStr) isMatch = true;
+        if (searchBy == 1 && arr[i].age >= minVal && arr[i].age <= maxVal)
+            match = true;
+        else if (searchBy == 2 && arr[i].distance >= minVal && arr[i].distance <= maxVal)
+            match = true;
+        else if (searchBy == 3 && arr[i].factor >= minVal && arr[i].factor <= maxVal)
+            match = true;
+        else if (searchBy == 4 && arr[i].days >= minVal && arr[i].days <= maxVal)
+            match = true;
+        else if (searchBy == 5 && arr[i].transport == targetStr)
+            match = true;
 
-        if (isMatch) {
-            cout << left << setw(15) << arr[i].id << setw(10) << arr[i].age 
-                 << setw(15) << arr[i].transport << setw(15) << arr[i].distance 
-                 << setw(15) << arr[i].factor << setw(15) << arr[i].days << endl;
+        if (match)
             matchCount++;
-        }
     }
-    cout << "----------------------------------------------------------------------------------\n";
-    cout << "Total Found: " << matchCount << "\n";
+
+    return matchCount;
 }
 
-// Task 7: Binary Search (Range-Based with Total Count)
-int binarySearchArray(Resident arr[], int size, int searchBy, double minVal, double maxVal, string targetStr) {
-    int left = 0;
-    int right = size - 1;
-    int anchorIndex = -1;
+int binarySearchArray(Resident arr[], int size, int searchBy, double minVal, double maxVal, string targetStr)
+{
+    int left = 0, right = size - 1;
+    int anchor = -1;
 
-    // STEP 1: Fast Binary Search to find AT LEAST ONE match
-    while (left <= right) {
+    while (left <= right)
+    {
         int mid = left + (right - left) / 2;
-        bool isMatch = false;
+        bool match = false;
         bool goLeft = false;
 
-        if (searchBy == 5) { // String exact match
-            if (arr[mid].transport == targetStr) isMatch = true;
-            else if (arr[mid].transport > targetStr) goLeft = true;
-        } else { // Numeric Range match
-            double midValue = 0.0;
-            if (searchBy == 1) midValue = arr[mid].age;
-            else if (searchBy == 2) midValue = arr[mid].distance;
-            else if (searchBy == 3) midValue = arr[mid].factor;
-            else if (searchBy == 4) midValue = arr[mid].days;
+        if (searchBy == 5)
+        {
+            if (arr[mid].transport == targetStr)
+                match = true;
+            else if (arr[mid].transport > targetStr)
+                goLeft = true;
+        }
+        else
+        {
+            double val = 0;
 
-            if (midValue >= minVal && midValue <= maxVal) isMatch = true;
-            else if (midValue > maxVal) goLeft = true;
+            if (searchBy == 1)
+                val = arr[mid].age;
+            else if (searchBy == 2)
+                val = arr[mid].distance;
+            else if (searchBy == 3)
+                val = arr[mid].factor;
+            else if (searchBy == 4)
+                val = arr[mid].days;
+
+            if (val >= minVal && val <= maxVal)
+                match = true;
+            else if (val > maxVal)
+                goLeft = true;
         }
 
-        if (isMatch) {
-            anchorIndex = mid; // We found one! Save its location.
-            break;             // Stop jumping around!
-        } else if (goLeft) {
+        if (match)
+        {
+            anchor = mid;
+            break;
+        }
+        else if (goLeft)
             right = mid - 1;
-        } else {
+        else
             left = mid + 1;
+    }
+
+    if (anchor == -1)
+        return 0;
+
+    int first = anchor, last = anchor;
+
+    while (first > 0)
+    {
+        bool ok = false;
+        if (searchBy == 5 && arr[first - 1].transport == targetStr)
+            ok = true;
+        else if (searchBy == 1 && arr[first - 1].age >= minVal && arr[first - 1].age <= maxVal)
+            ok = true;
+        else if (searchBy == 2 && arr[first - 1].distance >= minVal && arr[first - 1].distance <= maxVal)
+            ok = true;
+        else if (searchBy == 3 && arr[first - 1].factor >= minVal && arr[first - 1].factor <= maxVal)
+            ok = true;
+        else if (searchBy == 4 && arr[first - 1].days >= minVal && arr[first - 1].days <= maxVal)
+            ok = true;
+
+        if (!ok)
+            break;
+        first--;
+    }
+
+    while (last < size - 1)
+    {
+        bool ok = false;
+        if (searchBy == 5 && arr[last + 1].transport == targetStr)
+            ok = true;
+        else if (searchBy == 1 && arr[last + 1].age >= minVal && arr[last + 1].age <= maxVal)
+            ok = true;
+        else if (searchBy == 2 && arr[last + 1].distance >= minVal && arr[last + 1].distance <= maxVal)
+            ok = true;
+        else if (searchBy == 3 && arr[last + 1].factor >= minVal && arr[last + 1].factor <= maxVal)
+            ok = true;
+        else if (searchBy == 4 && arr[last + 1].days >= minVal && arr[last + 1].days <= maxVal)
+            ok = true;
+
+        if (!ok)
+            break;
+        last++;
+    }
+
+    return (last - first + 1);
+}
+
+void printArrayResults(Resident arr[], int size, int searchBy, double minVal, double maxVal, string targetStr)
+{
+    int count = 0;
+
+    cout << "\n"
+         << left << setw(15) << "Resident ID"
+         << setw(10) << "Age"
+         << setw(15) << "Transport"
+         << setw(15) << "Distance"
+         << setw(15) << "Factor"
+         << setw(15) << "Days" << endl;
+
+    cout << "----------------------------------------------------------------------------------\n";
+
+    for (int i = 0; i < size; i++)
+    {
+        bool match = false;
+
+        if (searchBy == 1 && arr[i].age >= minVal && arr[i].age <= maxVal)
+            match = true;
+        else if (searchBy == 2 && arr[i].distance >= minVal && arr[i].distance <= maxVal)
+            match = true;
+        else if (searchBy == 3 && arr[i].factor >= minVal && arr[i].factor <= maxVal)
+            match = true;
+        else if (searchBy == 4 && arr[i].days >= minVal && arr[i].days <= maxVal)
+            match = true;
+        else if (searchBy == 5 && arr[i].transport == targetStr)
+            match = true;
+
+        if (match)
+        {
+            cout << left << setw(15) << arr[i].id
+                 << setw(10) << arr[i].age
+                 << setw(15) << arr[i].transport
+                 << setw(15) << arr[i].distance
+                 << setw(15) << arr[i].factor
+                 << setw(15) << arr[i].days << endl;
+
+            count++;
         }
     }
 
-    // STEP 2: If we didn't find anything, just return 0
-    if (anchorIndex == -1) return 0;
-
-    // STEP 3: Expand Outward (Scan Left and Right to find the rest)
-    int firstMatch = anchorIndex;
-    int lastMatch = anchorIndex;
-
-    // Walk Left to find where the block of matches starts
-    while (firstMatch > 0) {
-        bool stillMatch = false;
-        if (searchBy == 5 && arr[firstMatch - 1].transport == targetStr) stillMatch = true;
-        else if (searchBy == 1 && arr[firstMatch - 1].age >= minVal && arr[firstMatch - 1].age <= maxVal) stillMatch = true;
-        else if (searchBy == 2 && arr[firstMatch - 1].distance >= minVal && arr[firstMatch - 1].distance <= maxVal) stillMatch = true;
-        else if (searchBy == 3 && arr[firstMatch - 1].factor >= minVal && arr[firstMatch - 1].factor <= maxVal) stillMatch = true;
-        else if (searchBy == 4 && arr[firstMatch - 1].days >= minVal && arr[firstMatch - 1].days <= maxVal) stillMatch = true;
-        
-        if (!stillMatch) break; // We hit a non-matching record, stop walking left.
-        firstMatch--;
-    }
-
-    // Walk Right to find where the block of matches ends
-    while (lastMatch < size - 1) {
-        bool stillMatch = false;
-        if (searchBy == 5 && arr[lastMatch + 1].transport == targetStr) stillMatch = true;
-        else if (searchBy == 1 && arr[lastMatch + 1].age >= minVal && arr[lastMatch + 1].age <= maxVal) stillMatch = true;
-        else if (searchBy == 2 && arr[lastMatch + 1].distance >= minVal && arr[lastMatch + 1].distance <= maxVal) stillMatch = true;
-        else if (searchBy == 3 && arr[lastMatch + 1].factor >= minVal && arr[lastMatch + 1].factor <= maxVal) stillMatch = true;
-        else if (searchBy == 4 && arr[lastMatch + 1].days >= minVal && arr[lastMatch + 1].days <= maxVal) stillMatch = true;
-        
-        if (!stillMatch) break; // We hit a non-matching record, stop walking right.
-        lastMatch++;
-    }
-
-    // STEP 4: Print all the matches we found!
-    int matchCount = (lastMatch - firstMatch) + 1;
-    
-    cout << "\n" << left << setw(15) << "Resident ID" << setw(10) << "Age" 
-         << setw(15) << "Transport" << setw(15) << "Distance" 
-         << setw(15) << "Factor" << setw(15) << "Days" << endl;
     cout << "----------------------------------------------------------------------------------\n";
-    
-    for (int i = firstMatch; i <= lastMatch; i++) {
-        cout << left << setw(15) << arr[i].id << setw(10) << arr[i].age 
-             << setw(15) << arr[i].transport << setw(15) << arr[i].distance 
-             << setw(15) << arr[i].factor << setw(15) << arr[i].days << endl;
-    }
-    
-    cout << "----------------------------------------------------------------------------------\n";
-    cout << "Total Found: " << matchCount << "\n";
-
-    return matchCount; 
+    cout << "Total Found: " << count << "\n";
 }

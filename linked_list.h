@@ -5,7 +5,8 @@
 
 using namespace std;
 
-struct Commuter {
+struct Commuter
+{
     string residentID;
     int age;
     string transportMode;
@@ -14,26 +15,28 @@ struct Commuter {
     int avgDaysPerMonth;
 };
 
-struct Node {
+struct Node
+{
     Commuter data;
-    Node* next;
+    Node *next;
 };
 
 int getTransportIndex(string type);
 string getTransportName(int index);
 
-Node* loadCityData(string filename);
-void destroyList(Node* head);
+Node *loadCityData(string filename);
+void destroyList(Node *head);
+Node *buildMergedList(Node *cityA, Node *cityB, Node *cityC);
 
-void executeLinkedListAnalysis(Node* heads[], int numLists, string cityName);
-void queryEmissionByAge(Node* heads[], int numLists, bool activeAges[5], string targetName);
-void queryEmissionByTransport(Node* heads[], int numLists, bool activeTransports[6], string targetName);
-void executeCrossDatasetComparison(Node* cityA, Node* cityB, Node* cityC);
-void executeCrossDatasetTransportComparison(Node* cityA, Node* cityB, Node* cityC);
-void executeAgeVsTransportComparison(Node* cityA, Node* cityB, Node* cityC);
+void executeLinkedListAnalysis(Node *heads[], int numLists, string cityName);
+void queryEmissionByAge(Node *heads[], int numLists, bool activeAges[5], string targetName);
+void queryEmissionByTransport(Node *heads[], int numLists, bool activeTransports[6], string targetName);
+void executeCrossDatasetComparison(Node *cityA, Node *cityB, Node *cityC);
+void executeCrossDatasetTransportComparison(Node *cityA, Node *cityB, Node *cityC);
+void executeAgeVsTransportComparison(Node *cityA, Node *cityB, Node *cityC);
 
-void bubbleSortLinkedList(Node* head, int sortBy);
-void insertionSortLinkedList(Node*& head, int sortBy);
-void linearSearchLinkedList(Node* head, int searchBy, double minVal, double maxVal, string targetStr);
+void bubbleSortLinkedList(Node *head, int sortBy);
+void insertionSortLinkedList(Node *&head, int sortBy);
+void linearSearchLinkedList(Node *head, int searchBy, double minVal, double maxVal, string targetStr);
 
 #endif
