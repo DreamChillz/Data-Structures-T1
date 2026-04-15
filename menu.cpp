@@ -227,7 +227,12 @@ void handleSortingBenchmark(Resident workingArr[], Resident combinedArr[], Node 
         int sortBy;
         string input = getRawBuffer();
         stringstream ssSort(input);
-        ssSort >> sortBy;
+
+        if (!(ssSort >> sortBy) || sortBy < 1 || sortBy > 6)
+        {
+            cout << "Invalid choice. Please enter a number between 1 and 6.\n";
+            continue;
+        }
 
         if (sortBy == 6)
             break;
@@ -240,7 +245,12 @@ void handleSortingBenchmark(Resident workingArr[], Resident combinedArr[], Node 
         int sortMethod;
         input = getRawBuffer();
         stringstream ssMethod(input);
-        ssMethod >> sortMethod;
+
+        if (!(ssMethod >> sortMethod) || sortMethod < 1 || sortMethod > 2)
+        {
+            cout << "Invalid choice. Please enter 1 or 2.\n";
+            continue;
+        }
 
         cout << "\nExecuting Sorting Algorithms on " << totalSize << " records... Please wait.\n";
 
@@ -273,7 +283,6 @@ void handleSortingBenchmark(Resident workingArr[], Resident combinedArr[], Node 
         cout << "----------------------------------------------------------------------\n";
         cout << left << setw(20) << "Array" << setw(25) << arrTime << setw(25) << arrayMemory << endl;
         cout << left << setw(20) << "Linked List" << setw(25) << llTime << setw(25) << linkedListMemory << endl;
-        cout << "----------------------------------------------------------------------\n";
 
         // Preview Logic
         cout << "\nWould you like to preview the sorted Array? (y/n): ";
@@ -302,7 +311,7 @@ void handleSearchingBenchmark(Resident combinedArr[], Node *cityA, Node *cityB, 
         string targetStr = "";
 
         cout << "\n--- TASK 7: SEARCHING CONFIGURATION ---\n";
-        cout << "1. Age Range\n2. Daily Distance (km) Range\n3. Carbon Emission Factor Range\n4. Days Range\n5. Mode of Transport (Exact Match)\n6. Back\nChoice: ";
+        cout << "1. Age Range\n2. Daily Distance (km) Range\n3. Carbon Emission Factor Range\n4. Days Range\n5. Mode of Transport\n6. Back\nChoice: ";
 
         string input = getRawBuffer();
         stringstream ss(input);
@@ -311,7 +320,7 @@ void handleSearchingBenchmark(Resident combinedArr[], Node *cityA, Node *cityB, 
         if (!(ss >> searchBy) || searchBy < 1 || searchBy > 6)
         {
             cout << "Number not in range\n";
-            continue; // Restarts the loop to ask again
+            continue;
         }
 
         if (searchBy == 6)
@@ -320,8 +329,7 @@ void handleSearchingBenchmark(Resident combinedArr[], Node *cityA, Node *cityB, 
         if (searchBy == 5)
         {
             cout << "Enter exact Transport Mode (e.g., Bicycle, Car, Bus): ";
-            cin >> ws;
-            getline(cin, targetStr);
+            targetStr = getRawBuffer();
         }
         else
         {
@@ -332,28 +340,26 @@ void handleSearchingBenchmark(Resident combinedArr[], Node *cityA, Node *cityB, 
             cout << "Enter Maximum Value: ";
             string maxIn = getRawBuffer();
 
-            // --- ADDED VALIDATION: try-catch for string-to-double conversion ---
             try
             {
                 minVal = stod(minIn);
                 maxVal = stod(maxIn);
 
-                // Optional but highly recommended logical check
                 if (minVal > maxVal)
                 {
                     cout << "Error: Minimum value cannot be greater than Maximum value.\n";
-                    continue; // Restarts the menu
+                    continue;
                 }
             }
             catch (const invalid_argument &e)
             {
                 cout << "Invalid input: Please enter numerical values only.\n";
-                continue; // Restarts the menu
+                continue;
             }
             catch (const out_of_range &e)
             {
                 cout << "Invalid input: Number is too large or too small.\n";
-                continue; // Restarts the menu
+                continue;
             }
         }
         cout << "\nSelect Searching Algorithm:\n1. Linear Search\n2. Binary Search\nChoice: ";
@@ -406,9 +412,11 @@ void handleSearchingBenchmark(Resident combinedArr[], Node *cityA, Node *cityB, 
 
         // Results Table
         cout << "\n================ TASK 7: SEARCHING RESULTS ===============\n";
-        cout << left << setw(20) << "Data Structure" << setw(25) << "Execution Time (us)" << endl;
-        cout << "Array: " << duration_cast<microseconds>(stopArr - startArr).count() << " us" << endl;
-        cout << "Linked List: " << duration_cast<microseconds>(stopLL - startLL).count() << " us" << endl;
+        cout << left << setw(20) << "Data Structure" << setw(25) << "Execution Time (us)" << setw(25) << "Memory Usage (Bytes)" << endl;
+        cout << "----------------------------------------------------------------------\n";
+        cout << left << setw(20) << "Array" << setw(25) << duration_cast<microseconds>(stopArr - startArr).count() << setw(25) << arrayMemory << endl;
+        cout << left << setw(20) << "Linked List" << setw(25) << duration_cast<microseconds>(stopLL - startLL).count() << setw(25) << linkedListMemory << endl;
+        cout << "----------------------------------------------------------------------\n";
 
         destroyList(combinedLLHead);
     }
@@ -427,7 +435,7 @@ void executePerformanceComparison(Node *cityA, Node *cityB, Node *cityC)
     totalSize += loadCSV("datasets/dataset3-cityC.csv", combinedArr + totalSize);
 
     size_t arrayMemory = sizeof(Resident) * totalSize;
-    size_t linkedListMemory = (sizeof(Resident) + sizeof(void *)) * totalSize;
+    size_t linkedListMemory = sizeof(Node) * totalSize;
 
     while (true)
     {
