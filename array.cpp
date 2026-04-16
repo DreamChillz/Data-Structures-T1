@@ -84,7 +84,7 @@ void executeArrayAnalysis(Resident *cities[], int counts[], int numCities, strin
         "61-100 (Retirees)"};
     string modeNames[] = {"Car", "Bus", "Bicycle", "Walking", "School Bus", "Carpool"};
 
-    // 1. Data Aggregation
+    
     for (int c = 0; c < numCities; c++)
     {
         if (cities[c] == nullptr)
@@ -106,7 +106,7 @@ void executeArrayAnalysis(Resident *cities[], int counts[], int numCities, strin
             else if (r.age <= 100)
                 aGrp = 4;
 
-            int tIdx = getTransportIndex_Array(r.transport); // Fixed function name
+            int tIdx = getTransportIndex_Array(r.transport); 
 
             if (aGrp != -1 && tIdx != -1)
             {
@@ -117,7 +117,7 @@ void executeArrayAnalysis(Resident *cities[], int counts[], int numCities, strin
         }
     }
 
-    // 2. Table Rendering (Matches Sample Image)
+    
     cout << "\n--- ANALYSIS FOR: " << cityName << " ---\n";
 
     for (int i = 0; i < 5; i++)
@@ -210,23 +210,29 @@ void queryArrayEmissionByAge(Resident *cities[], int counts[], int numCities, bo
 
     for (int a = 0; a < 5; a++)
     {
+        
         if (!activeAges[a])
             continue;
 
         int modeCounts[6] = {0};
         double modeEmissions[6] = {0.0};
         double ageTotal = 0;
-        bool hasData = false;
+        bool hasDataForThisGroup = false;
 
         for (int c = 0; c < numCities; c++)
         {
+            if (cities[c] == nullptr) continue;
             for (int i = 0; i < counts[c]; i++)
             {
                 Resident r = cities[c][i];
-                int rAgeGrp = (r.age >= 6 && r.age <= 17) ? 0 : (r.age <= 25) ? 1
-                                                            : (r.age <= 45)   ? 2
-                                                            : (r.age <= 60)   ? 3
-                                                                              : 4;
+                
+               
+                int rAgeGrp = -1;
+                if (r.age >= 6 && r.age <= 17) rAgeGrp = 0;
+                else if (r.age <= 25) rAgeGrp = 1;
+                else if (r.age <= 45) rAgeGrp = 2;
+                else if (r.age <= 60) rAgeGrp = 3;
+                else if (r.age >= 61) rAgeGrp = 4;
 
                 if (rAgeGrp == a)
                 {
@@ -235,15 +241,17 @@ void queryArrayEmissionByAge(Resident *cities[], int counts[], int numCities, bo
                     {
                         modeCounts[tIdx]++;
                         modeEmissions[tIdx] += calculateEmission(r);
-                        hasData = true;
+                        hasDataForThisGroup = true;
                     }
                 }
             }
         }
 
-        if (hasData)
+      
+        cout << "\nDemographic: " << ageLabels[a] << endl;
+
+        if (hasDataForThisGroup)
         {
-            cout << "\nDemographic: " << ageLabels[a] << endl;
             cout << "----------------------------------------------------------------------\n";
             cout << left << setw(20) << "Mode" << setw(10) << "Count"
                  << setw(25) << "Total Emission (kg CO2)" << "Average per Resident" << endl;
@@ -255,15 +263,21 @@ void queryArrayEmissionByAge(Resident *cities[], int counts[], int numCities, bo
                     double avg = modeEmissions[j] / modeCounts[j];
                     ageTotal += modeEmissions[j];
                     cout << left << setw(20) << modeNames[j] << setw(10) << modeCounts[j]
-                         << setw(25) << fixed << setprecision(2) << modeEmissions[j] << avg << endl;
+                         << setw(25) << fixed << setprecision(2) << modeEmissions[j] 
+                         << fixed << setprecision(2) << avg << endl;
                 }
             }
             cout << "----------------------------------------------------------------------\n";
-            cout << "Total for Demographic: " << ageTotal << " kg CO2\n";
+            cout << "Total for Demographic: " << fixed << setprecision(2) << ageTotal << " kg CO2\n";
             aggregateTotal += ageTotal;
         }
+        else 
+        {
+           
+            cout << ">>> No valid data found for this demographic in selected cities. <<<\n";
+        }
     }
-    cout << "\n>>> AGGREGATE FILTRATION EMISSION: " << aggregateTotal << " kg CO2 <<<\n";
+    cout << "\n>>> AGGREGATE FILTRATION EMISSION: " << fixed << setprecision(2) << aggregateTotal << " kg CO2 <<<\n";
 }
 
 void queryArrayEmissionByTransport(Resident *cities[], int counts[], int numCities, bool activeTransports[6])
@@ -284,7 +298,7 @@ void queryArrayEmissionByTransport(Resident *cities[], int counts[], int numCiti
         double ageEmissions[5] = {0.0};
         bool hasData = false;
 
-        // Collect data for this specific transport mode
+        
         for (int c = 0; c < numCities; c++)
         {
             if (cities[c] == nullptr)
