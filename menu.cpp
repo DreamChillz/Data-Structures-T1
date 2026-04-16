@@ -302,6 +302,22 @@ void handleSortingBenchmark(Resident workingArr[], Resident combinedArr[], Node 
     }
 }
 
+string matchTransportMode(string input)
+{
+    string lower = input;
+    for (char &c : lower) c = tolower(c);
+
+    string modes[] = {"Car", "Bus", "Bicycle", "Walking", "School Bus", "Carpool"};
+    for (const string &mode : modes)
+    {
+        string modeLower = mode;
+        for (char &c : modeLower) c = tolower(c);
+        if (lower == modeLower)
+            return mode;
+    }
+    return "";
+}
+
 void handleSearchingBenchmark(Resident combinedArr[], Node *cityA, Node *cityB, Node *cityC, int totalSize, size_t arrayMemory, size_t linkedListMemory)
 {
     while (true)
@@ -328,8 +344,14 @@ void handleSearchingBenchmark(Resident combinedArr[], Node *cityA, Node *cityB, 
 
         if (searchBy == 5)
         {
-            cout << "Enter exact Transport Mode (e.g., Bicycle, Car, Bus): ";
-            targetStr = getRawBuffer();
+            cout << "Enter Transport Mode (Car, Bus, Bicycle, Walking, School Bus, Carpool): ";
+            string rawTransport = getRawBuffer();
+            targetStr = matchTransportMode(rawTransport);
+            if (targetStr.empty())
+            {
+                cout << "Invalid transport mode. Please enter one of: Car, Bus, Bicycle, Walking, School Bus, Carpool\n";
+                continue;
+            }
         }
         else
         {
@@ -451,7 +473,7 @@ void handleSearchingBenchmark(Resident combinedArr[], Node *cityA, Node *cityB, 
              << setw(25) << duration_cast<microseconds>(stopArr - startArr).count()
              << setw(25) << arrayMemory << endl;
 
-        // LINKED LIST RESULT (Pre-calculate strings using ternary operators to avoid inline ifs)
+        // LINKED LIST RESULT
         bool isLLSupported = (searchMethod == 1 || searchMethod == 3); // Linear and Jump supported
         string llSearchType = isLLSupported ? (searchMethod == 1 ? "Linear Search" : "Jump Search") : "N/A";
         string llTime = isLLSupported ? to_string(duration_cast<microseconds>(stopLL - startLL).count()) : "N/A";
@@ -469,6 +491,210 @@ void handleSearchingBenchmark(Resident combinedArr[], Node *cityA, Node *cityB, 
 
         destroyList(combinedLLHead);
     }
+}
+
+void executeFullPerformanceAnalysis(Resident combinedArr[], Node *cityA, Node *cityB, Node *cityC, int totalSize, size_t arrayMemory, size_t linkedListMemory)
+{
+    cout << "\n==========================================================\n";
+    cout << "         TASK 8: FULL PERFORMANCE ANALYSIS REPORT         \n";
+    cout << "==========================================================\n";
+    cout << "Running all algorithms on " << totalSize << " records...\n";
+
+    // ─── SORTING SECTION ───────────────────────────────────────────
+    cout << "\n==================== SORTING BENCHMARK ====================\n";
+    cout << left << setw(20) << "Algorithm"
+         << setw(20) << "Data Structure"
+         << setw(25) << "Execution Time (us)"
+         << setw(25) << "Memory Usage (Bytes)"
+         << setw(15) << "Time Complexity" << endl;
+    cout << "-------------------------------------------------------------------------------------\n";
+
+    // Bubble Sort
+    {
+        Resident workingArr[600];
+        for (int i = 0; i < totalSize; i++)
+            workingArr[i] = combinedArr[i];
+        Node *llHead = buildMergedList(cityA, cityB, cityC);
+
+        auto startArr = high_resolution_clock::now();
+        bubbleSortArray(workingArr, totalSize, 1); // sortBy: 1 = Age
+        auto stopArr = high_resolution_clock::now();
+
+        auto startLL = high_resolution_clock::now();
+        bubbleSortLinkedList(llHead, 1); // sortBy: 1 = Age
+        auto stopLL = high_resolution_clock::now();
+
+        cout << left << setw(20) << "Bubble Sort"
+             << setw(20) << "Array"
+             << setw(25) << duration_cast<microseconds>(stopArr - startArr).count()
+             << setw(25) << arrayMemory
+             << setw(15) << "O(n^2)" << endl;
+
+        cout << left << setw(20) << "Bubble Sort"
+             << setw(20) << "Linked List"
+             << setw(25) << duration_cast<microseconds>(stopLL - startLL).count()
+             << setw(25) << linkedListMemory
+             << setw(15) << "O(n^2)" << endl;
+
+        destroyList(llHead);
+    }
+
+    // Insertion Sort
+    {
+        Resident workingArr[600];
+        for (int i = 0; i < totalSize; i++)
+            workingArr[i] = combinedArr[i];
+        Node *llHead = buildMergedList(cityA, cityB, cityC);
+
+        auto startArr = high_resolution_clock::now();
+        insertionSortArray(workingArr, totalSize, 1); // sortBy: 1 = Age
+        auto stopArr = high_resolution_clock::now();
+
+        auto startLL = high_resolution_clock::now();
+        insertionSortLinkedList(llHead, 1); // sortBy: 1 = Age
+        auto stopLL = high_resolution_clock::now();
+
+        cout << left << setw(20) << "Insertion Sort"
+             << setw(20) << "Array"
+             << setw(25) << duration_cast<microseconds>(stopArr - startArr).count()
+             << setw(25) << arrayMemory
+             << setw(15) << "O(n^2)" << endl;
+
+        cout << left << setw(20) << "Insertion Sort"
+             << setw(20) << "Linked List"
+             << setw(25) << duration_cast<microseconds>(stopLL - startLL).count()
+             << setw(25) << linkedListMemory
+             << setw(15) << "O(n^2)" << endl;
+
+        destroyList(llHead);
+    }
+
+    // ─── SEARCHING SECTION ─────────────────────────────────────────
+    cout << "\n==================== SEARCHING BENCHMARK ==================\n";
+    cout << left << setw(20) << "Algorithm"
+         << setw(20) << "Data Structure"
+         << setw(25) << "Execution Time (us)"
+         << setw(25) << "Memory Usage (Bytes)"
+         << setw(15) << "Time Complexity" << endl;
+    cout << "-------------------------------------------------------------------------------------\n";
+
+    // Test on age range 18-60 as a fixed benchmark input
+    double minVal = 18, maxVal = 60;
+    int searchBy = 1; // Age
+
+    // Linear Search
+    {
+        Resident workingArr[600];
+        for (int i = 0; i < totalSize; i++)
+            workingArr[i] = combinedArr[i];
+        Node *llHead = buildMergedList(cityA, cityB, cityC);
+
+        auto startArr = high_resolution_clock::now();
+        linearSearchArray(workingArr, totalSize, searchBy, minVal, maxVal, "");
+        auto stopArr = high_resolution_clock::now();
+
+        auto startLL = high_resolution_clock::now();
+        linearSearchLinkedList(llHead, searchBy, minVal, maxVal, "");
+        auto stopLL = high_resolution_clock::now();
+
+        cout << left << setw(20) << "Linear Search"
+             << setw(20) << "Array"
+             << setw(25) << duration_cast<microseconds>(stopArr - startArr).count()
+             << setw(25) << arrayMemory
+             << setw(15) << "O(n)" << endl;
+
+        cout << left << setw(20) << "Linear Search"
+             << setw(20) << "Linked List"
+             << setw(25) << duration_cast<microseconds>(stopLL - startLL).count()
+             << setw(25) << linkedListMemory
+             << setw(15) << "O(n)" << endl;
+
+        destroyList(llHead);
+    }
+
+    // Binary Search (Array only)
+    {
+        Resident workingArr[600];
+        for (int i = 0; i < totalSize; i++)
+            workingArr[i] = combinedArr[i];
+        insertionSortArray(workingArr, totalSize, searchBy);
+
+        auto startArr = high_resolution_clock::now();
+        binarySearchArray(workingArr, totalSize, searchBy, minVal, maxVal, "");
+        auto stopArr = high_resolution_clock::now();
+
+        cout << left << setw(20) << "Binary Search"
+             << setw(20) << "Array"
+             << setw(25) << duration_cast<microseconds>(stopArr - startArr).count()
+             << setw(25) << arrayMemory
+             << setw(15) << "O(log n)" << endl;
+
+        cout << left << setw(20) << "Binary Search"
+             << setw(20) << "Linked List"
+             << setw(25) << "N/A"
+             << setw(25) << "N/A"
+             << setw(15) << "N/A" << endl;
+
+        cout << "  *Binary Search not supported on Linked List (no random access)\n";
+    }
+
+    // Jump Search
+    {
+        Resident workingArr[600];
+        for (int i = 0; i < totalSize; i++)
+            workingArr[i] = combinedArr[i];
+        insertionSortArray(workingArr, totalSize, searchBy);
+        Node *llHead = buildMergedList(cityA, cityB, cityC);
+        insertionSortLinkedList(llHead, searchBy);
+
+        auto startArr = high_resolution_clock::now();
+        jumpSearchArray(workingArr, totalSize, searchBy, minVal, maxVal, "");
+        auto stopArr = high_resolution_clock::now();
+
+        auto startLL = high_resolution_clock::now();
+        jumpSearchLinkedList(llHead, searchBy, minVal, maxVal, "");
+        auto stopLL = high_resolution_clock::now();
+
+        cout << left << setw(20) << "Jump Search"
+             << setw(20) << "Array"
+             << setw(25) << duration_cast<microseconds>(stopArr - startArr).count()
+             << setw(25) << arrayMemory
+             << setw(15) << "O(sqrt(n))" << endl;
+
+        cout << left << setw(20) << "Jump Search"
+             << setw(20) << "Linked List"
+             << setw(25) << duration_cast<microseconds>(stopLL - startLL).count()
+             << setw(25) << linkedListMemory
+             << setw(15) << "O(sqrt(n))" << endl;
+
+        destroyList(llHead);
+    }
+
+    // ─── MEMORY SUMMARY ────────────────────────────────────────────
+    cout << "\n==================== MEMORY SUMMARY =======================\n";
+    cout << left << setw(25) << "Data Structure"
+         << setw(25) << "Total Records"
+         << setw(25) << "Memory Per Record"
+         << setw(25) << "Total Memory (Bytes)" << endl;
+    cout << "-------------------------------------------------------------------------------------\n";
+    cout << left << setw(25) << "Array"
+         << setw(25) << totalSize
+         << setw(25) << sizeof(Resident)
+         << setw(25) << arrayMemory << endl;
+    cout << left << setw(25) << "Linked List"
+         << setw(25) << totalSize
+         << setw(25) << sizeof(Node)
+         << setw(25) << linkedListMemory << endl;
+
+    cout << "\n  *Linked List overhead includes the 'next' pointer per node ("
+         << sizeof(Node *) << " bytes extra per record)\n";
+
+    cout << "\n==========================================================\n";
+    cout << "                  END OF PERFORMANCE REPORT               \n";
+    cout << "==========================================================\n";
+    cout << "\nNote: Analysis of when arrays vs linked lists perform better (Task 8b)\n";
+    cout << "and their real-world advantages/disadvantages (Task 8c) are discussed\n";
+    cout << "in the project documentation.\n";
 }
 
 void executePerformanceComparison(Node *cityA, Node *cityB, Node *cityC)
@@ -491,7 +717,8 @@ void executePerformanceComparison(Node *cityA, Node *cityB, Node *cityC)
         cout << "\n=== ALGORITHM SELECTION (Total Records: " << totalSize << ") ===\n";
         cout << "1. Task 6: Compare Sorting Performance\n";
         cout << "2. Task 7: Compare Searching Performance\n";
-        cout << "3. Return to Main Terminal\n";
+        cout << "3. Task 8: Full Performance Analysis\n";
+        cout << "4. Return to Main Terminal\n";
         cout << "Choice: ";
 
         int algoChoice;
@@ -508,6 +735,10 @@ void executePerformanceComparison(Node *cityA, Node *cityB, Node *cityC)
             handleSearchingBenchmark(combinedArr, cityA, cityB, cityC, totalSize, arrayMemory, linkedListMemory);
         }
         else if (algoChoice == 3)
+        {
+            executeFullPerformanceAnalysis(combinedArr, cityA, cityB, cityC, totalSize, arrayMemory, linkedListMemory);
+        }
+        else if (algoChoice == 4)
         {
             break;
         }
@@ -558,8 +789,9 @@ int main()
         cout << "======================================================\n";
         cout << "1. Array Analysis Mode (Tasks 1-5)\n";
         cout << "2. Linked List Analysis Mode (Tasks 1-5)\n";
-        cout << "3. System Performance & Benchmarking (Tasks 6 & 7)\n";
-        cout << "4. Quit\n";
+        cout << "3. System Performance & Benchmarking (Tasks 6, 7, 8)\n";
+        cout << "4. Insights & Recommendations (Task 9)\n";
+        cout << "5. Quit\n";
         cout << "Architecture: ";
 
         string input = getRawBuffer();
@@ -575,6 +807,10 @@ int main()
             executePerformanceComparison(cityA, cityB, cityC);
         }
         else if (dsChoice == 4)
+        {
+            executeInsightsReport(cityA, cityB, cityC);
+        }
+        else if (dsChoice == 5)
         {
             break;
         }

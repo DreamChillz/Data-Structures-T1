@@ -40,4 +40,6 @@ void insertionSortLinkedList(Node *&head, int sortBy);
 void linearSearchLinkedList(Node *head, int searchBy, double minVal, double maxVal, string targetStr);
 void jumpSearchLinkedList(Node *head, int searchBy, double minVal, double maxVal, string targetStr);
 
+void executeInsightsReport(Node *cityA, Node *cityB, Node *cityC);
+
 #endif

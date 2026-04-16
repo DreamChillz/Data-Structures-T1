@@ -359,7 +359,7 @@ void queryArrayEmissionByTransport(Resident *cities[], int counts[], int numCiti
 }
 
 // Task 6 bubble sort
-// sortBy: 1 = Age, 2 = Distance, 3 = Carbon Emission
+// sortBy: 1 = Age, 2 = Distance, 3 = Carbon Emission, 4= Days, 5 = Transport
 // Task 6: Bubble Sort
 void bubbleSortArray(Resident arr[], int size, int sortBy)
 {
@@ -596,14 +596,11 @@ void printArrayResults(Resident arr[], int size, int searchBy, double minVal, do
 
 int jumpSearchArray(Resident arr[], int size, int searchBy, double minVal, double maxVal, string targetStr)
 {
-    // Step 1: Sort first (jump search requires sorted data)
-    insertionSortArray(arr, size, searchBy);
-
     int step = (int)std::sqrt((double)size);
     int prev = 0;
     int count = 0;
 
-    // Step 2: Jump phase — find the block where maxVal could exist
+    //  find the block where maxVal could exist
     while (prev < size)
     {
         int curr = min(prev + step, size) - 1;
