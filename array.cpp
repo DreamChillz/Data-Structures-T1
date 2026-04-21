@@ -452,7 +452,7 @@ int linearSearchArray(Resident arr[], int size, int searchBy, double minVal, dou
 
     return matchCount;
 }
-
+//Task 7: BInary Search able for range based
 int binarySearchArray(Resident arr[], int size, int searchBy, double minVal, double maxVal, string targetStr)
 {
     int left = 0, right = size - 1;
@@ -592,7 +592,7 @@ void printArrayResults(Resident arr[], int size, int searchBy, double minVal, do
     cout << "----------------------------------------------------------------------------------\n";
     cout << "Total Found: " << count << "\n";
 }
-
+//Task 7: Jump Search
 int jumpSearchArray(Resident arr[], int size, int searchBy, double minVal, double maxVal, string targetStr)
 {
     int step = (int)std::sqrt((double)size);
