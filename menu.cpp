@@ -305,13 +305,15 @@ void handleSortingBenchmark(Resident workingArr[], Resident combinedArr[], Node 
 string matchTransportMode(string input)
 {
     string lower = input;
-    for (char &c : lower) c = tolower(c);
+    for (char &c : lower)
+        c = tolower(c);
 
     string modes[] = {"Car", "Bus", "Bicycle", "Walking", "School Bus", "Carpool"};
     for (const string &mode : modes)
     {
         string modeLower = mode;
-        for (char &c : modeLower) c = tolower(c);
+        for (char &c : modeLower)
+            c = tolower(c);
         if (lower == modeLower)
             return mode;
     }
@@ -500,7 +502,7 @@ void executeFullPerformanceAnalysis(Resident combinedArr[], Node *cityA, Node *c
     cout << "==========================================================\n";
     cout << "Running all algorithms on " << totalSize << " records...\n";
 
-    // ─── SORTING SECTION ───────────────────────────────────────────
+    // Sorting Benchmark
     cout << "\n==================== SORTING BENCHMARK ====================\n";
     cout << left << setw(20) << "Algorithm"
          << setw(20) << "Data Structure"
@@ -569,7 +571,7 @@ void executeFullPerformanceAnalysis(Resident combinedArr[], Node *cityA, Node *c
         destroyList(llHead);
     }
 
-    // ─── SEARCHING SECTION ─────────────────────────────────────────
+    // Searching Benchmark
     cout << "\n==================== SEARCHING BENCHMARK ==================\n";
     cout << left << setw(20) << "Algorithm"
          << setw(20) << "Data Structure"
@@ -670,7 +672,7 @@ void executeFullPerformanceAnalysis(Resident combinedArr[], Node *cityA, Node *c
         destroyList(llHead);
     }
 
-    // ─── MEMORY SUMMARY ────────────────────────────────────────────
+    // Memory Summary
     cout << "\n==================== MEMORY SUMMARY =======================\n";
     cout << left << setw(25) << "Data Structure"
          << setw(25) << "Total Records"
@@ -745,9 +747,7 @@ void executePerformanceComparison(Node *cityA, Node *cityB, Node *cityC)
     }
 }
 
-// =========================================================================
-// UPDATED OPERATION SELECTION
-// =========================================================================
+
 void executeOperationSelection(int dsMode, Node *cityA, Node *cityB, Node *cityC)
 {
     int taskChoice = 0;
@@ -772,9 +772,7 @@ void executeOperationSelection(int dsMode, Node *cityA, Node *cityB, Node *cityC
     }
 }
 
-// =========================================================================
-// UPDATED MAIN MENU
-// =========================================================================
+// main menu
 int main()
 {
     Node *cityA = loadCityData("datasets/dataset1-cityA.csv");
