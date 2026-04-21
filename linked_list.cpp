@@ -721,7 +721,7 @@ void jumpSearchLinkedList(Node *head, int searchBy, double minVal, double maxVal
     }
 }
 
-// NEW Binary Search for Linked List
+// Binary Search for Linked List
 
 Node *middleNode(Node *start, Node *last)
 {
@@ -750,17 +750,22 @@ int binarySearchLinkedList(Node *head, int searchBy, double minVal, double maxVa
 
     auto getValue = [&](Node *node) -> double
     {
-        if (searchBy == 1) return node->data.age;
-        if (searchBy == 2) return node->data.dailyDistance;
-        if (searchBy == 3) return node->data.emissionFactor;
-        if (searchBy == 4) return node->data.avgDaysPerMonth;
+        if (searchBy == 1)
+            return node->data.age;
+        if (searchBy == 2)
+            return node->data.dailyDistance;
+        if (searchBy == 3)
+            return node->data.emissionFactor;
+        if (searchBy == 4)
+            return node->data.avgDaysPerMonth;
         return 0;
     };
 
     while (start != last)
     {
         Node *mid = middleNode(start, last);
-        if (!mid) return 0;
+        if (!mid)
+            return 0;
 
         if (searchBy == 5)
         {

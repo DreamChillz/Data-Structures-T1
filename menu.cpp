@@ -53,7 +53,7 @@ long long trimmedAvg(long long times[], int n)
 struct BenchResult
 {
     long long arrayTime;
-    long long llTime; // -1 = algorithm not supported on linked list
+    long long llTime;
 };
 
 // Run one sort method BENCH_RUNS times. Shuffles the array and rebuilds the
@@ -94,8 +94,7 @@ BenchResult benchmarkSort(Resident combinedArr[], Node *cityA, Node *cityB, Node
 
 // Run one search method BENCH_RUNS times. Pre-sorts data before the timing loop
 // when required; sorting time is excluded from the result.
-// searchMethod: 1 = linear, 2 = binary (array only), 3 = jump
-// llTime is -1 when the algorithm is not applicable to linked lists.
+// searchMethod: 1 = linear, 2 = binary, 3 = jump
 BenchResult benchmarkSearch(Resident combinedArr[], Node *cityA, Node *cityB, Node *cityC,
                             int totalSize, int searchMethod, int searchBy,
                             double minVal, double maxVal, string targetStr)
@@ -107,40 +106,38 @@ BenchResult benchmarkSearch(Resident combinedArr[], Node *cityA, Node *cityB, No
     Node *llHead = buildMergedList(cityA, cityB, cityC);
 
     if (searchMethod == 2 || searchMethod == 3)
-    insertionSortArray(workingArr, totalSize, searchBy);
+        insertionSortArray(workingArr, totalSize, searchBy);
 
     if (searchMethod == 2 || searchMethod == 3)
-    insertionSortLinkedList(llHead, searchBy);
-
-    bool llSupported = true;
+        insertionSortLinkedList(llHead, searchBy);
 
     for (int r = 0; r < BENCH_RUNS; r++)
-{
-    auto sA = high_resolution_clock::now();
-    if (searchMethod == 1)
-        linearSearchArray(workingArr, totalSize, searchBy, minVal, maxVal, targetStr);
-    else if (searchMethod == 2)
-        binarySearchArray(workingArr, totalSize, searchBy, minVal, maxVal, targetStr);
-    else
-        jumpSearchArray(workingArr, totalSize, searchBy, minVal, maxVal, targetStr);
+    {
+        auto sA = high_resolution_clock::now();
+        if (searchMethod == 1)
+            linearSearchArray(workingArr, totalSize, searchBy, minVal, maxVal, targetStr);
+        else if (searchMethod == 2)
+            binarySearchArray(workingArr, totalSize, searchBy, minVal, maxVal, targetStr);
+        else
+            jumpSearchArray(workingArr, totalSize, searchBy, minVal, maxVal, targetStr);
 
-    arrRuns[r] = duration_cast<microseconds>(high_resolution_clock::now() - sA).count();
+        arrRuns[r] = duration_cast<microseconds>(high_resolution_clock::now() - sA).count();
 
-    auto sL = high_resolution_clock::now();
-    if (searchMethod == 1)
-        linearSearchLinkedList(llHead, searchBy, minVal, maxVal, targetStr);
-    else if (searchMethod == 2)
-        binarySearchLinkedList(llHead, searchBy, minVal, maxVal, targetStr);
-    else if (searchMethod == 3)
-        jumpSearchLinkedList(llHead, searchBy, minVal, maxVal, targetStr);
+        auto sL = high_resolution_clock::now();
+        if (searchMethod == 1)
+            linearSearchLinkedList(llHead, searchBy, minVal, maxVal, targetStr);
+        else if (searchMethod == 2)
+            binarySearchLinkedList(llHead, searchBy, minVal, maxVal, targetStr);
+        else if (searchMethod == 3)
+            jumpSearchLinkedList(llHead, searchBy, minVal, maxVal, targetStr);
 
-    llRuns[r] = duration_cast<microseconds>(high_resolution_clock::now() - sL).count();
-} 
+        llRuns[r] = duration_cast<microseconds>(high_resolution_clock::now() - sL).count();
+    }
 
-destroyList(llHead);
+    destroyList(llHead);
 
-long long llAvg = trimmedAvg(llRuns + 1, BENCH_RUNS - 1);
-return {trimmedAvg(arrRuns + 1, BENCH_RUNS - 1), llAvg};
+    long long llAvg = trimmedAvg(llRuns + 1, BENCH_RUNS - 1);
+    return {trimmedAvg(arrRuns + 1, BENCH_RUNS - 1), llAvg};
 }
 
 void executeEmissionSubMenu(Node *cities[], string cityNames[])
@@ -462,7 +459,8 @@ void handleSearchingBenchmark(Resident combinedArr[], Node *cityA, Node *cityB, 
             }
         }
 
-        cout << "\nSelect Searching Algorithm:\n1. Linear Search\n2. Binary Search\n3. Jump Search\nChoice: ";        string methodInput = getRawBuffer();
+        cout << "\nSelect Searching Algorithm:\n1. Linear Search\n2. Binary Search\n3. Jump Search\nChoice: ";
+        string methodInput = getRawBuffer();
         stringstream methodSS(methodInput);
         if (!(methodSS >> searchMethod) || searchMethod < 1 || searchMethod > 3)
         {
@@ -476,8 +474,7 @@ void handleSearchingBenchmark(Resident combinedArr[], Node *cityA, Node *cityB, 
             cout << "\nJump Search selected. Sorting data...\n";
 
         cout << "Benchmarking on " << totalSize << " records (" << BENCH_RUNS << " runs, avg of middle 5)...\n";
-        BenchResult result = benchmarkSearch(combinedArr, cityA, cityB, cityC, totalSize,
-                                             searchMethod, searchBy, minVal, maxVal, targetStr);
+        BenchResult result = benchmarkSearch(combinedArr, cityA, cityB, cityC, totalSize, searchMethod, searchBy, minVal, maxVal, targetStr);
 
         // Prepare a sorted display copy for printArrayResults (outside of timing)
         Resident displayArr[600];
@@ -488,7 +485,6 @@ void handleSearchingBenchmark(Resident combinedArr[], Node *cityA, Node *cityB, 
         printArrayResults(displayArr, totalSize, searchBy, minVal, maxVal, targetStr);
 
         string searchNames[] = {"", "Linear Search", "Binary Search", "Jump Search"};
-        bool llSupported = true;
 
         cout << "\n================ TASK 7: SEARCHING RESULTS (avg of 5 runs) ===============\n";
         cout << left << setw(20) << "Data Structure" << setw(25) << "Search Type" << setw(25) << "Execution Time (us)" << setw(25) << "Memory Usage (Bytes)" << endl;
@@ -536,25 +532,21 @@ void executeFullPerformanceAnalysis(Resident combinedArr[], Node *cityA, Node *c
     const int searchBy = 1; // Age
 
     const char *searchNames[] = {"Linear Search", "Binary Search", "Jump Search"};
-    const char *searchComplex[] = {"O(n)", "O(log n)", "O(sqrt(n))"};
+    const char *searchComplexArr[] = {"O(n)", "O(log n)", "O(sqrt(n))"};
+    const char *searchComplexLL[] = {"O(n)", "O(n log n)", "O(n*sqrt(n))"};
     int searchMethods[] = {1, 2, 3};
 
     for (int a = 0; a < 3; a++)
     {
-        BenchResult r = benchmarkSearch(combinedArr, cityA, cityB, cityC, totalSize,
-                                        searchMethods[a], searchBy, minVal, maxVal, "");
-        bool llOk = (r.llTime >= 0);
+        BenchResult r = benchmarkSearch(combinedArr, cityA, cityB, cityC, totalSize, searchMethods[a], searchBy, minVal, maxVal, "");
 
         cout << left << setw(20) << searchNames[a] << setw(20) << "Array"
-             << setw(25) << r.arrayTime << setw(25) << arrayMemory << setw(15) << searchComplex[a] << endl;
+             << setw(25) << r.arrayTime << setw(25) << arrayMemory
+             << setw(15) << searchComplexArr[a] << endl;
 
         cout << left << setw(20) << searchNames[a] << setw(20) << "Linked List"
-             << setw(25) << (llOk ? to_string(r.llTime) : "N/A")
-             << setw(25) << (llOk ? to_string(linkedListMemory) : "N/A")
-             << setw(15) << (llOk ? searchComplex[a] : "N/A") << endl;
-
-        if (!llOk)
-            cout << "  *Binary Search not supported on Linked List (no random access)\n";
+             << setw(25) << r.llTime << setw(25) << linkedListMemory
+             << setw(15) << searchComplexLL[a] << endl;
     }
 
     cout << "\n==================== MEMORY SUMMARY =======================\n";
