@@ -107,35 +107,40 @@ BenchResult benchmarkSearch(Resident combinedArr[], Node *cityA, Node *cityB, No
     Node *llHead = buildMergedList(cityA, cityB, cityC);
 
     if (searchMethod == 2 || searchMethod == 3)
-        insertionSortArray(workingArr, totalSize, searchBy);
-    if (searchMethod == 3)
-        insertionSortLinkedList(llHead, searchBy);
+    insertionSortArray(workingArr, totalSize, searchBy);
 
-    bool llSupported = (searchMethod != 2);
+    if (searchMethod == 2 || searchMethod == 3)
+    insertionSortLinkedList(llHead, searchBy);
+
+    bool llSupported = true;
 
     for (int r = 0; r < BENCH_RUNS; r++)
-    {
-        auto sA = high_resolution_clock::now();
-        if (searchMethod == 1)
-            linearSearchArray(workingArr, totalSize, searchBy, minVal, maxVal, targetStr);
-        else if (searchMethod == 2)
-            binarySearchArray(workingArr, totalSize, searchBy, minVal, maxVal, targetStr);
-        else
-            jumpSearchArray(workingArr, totalSize, searchBy, minVal, maxVal, targetStr);
-        arrRuns[r] = duration_cast<microseconds>(high_resolution_clock::now() - sA).count();
+{
+    auto sA = high_resolution_clock::now();
+    if (searchMethod == 1)
+        linearSearchArray(workingArr, totalSize, searchBy, minVal, maxVal, targetStr);
+    else if (searchMethod == 2)
+        binarySearchArray(workingArr, totalSize, searchBy, minVal, maxVal, targetStr);
+    else
+        jumpSearchArray(workingArr, totalSize, searchBy, minVal, maxVal, targetStr);
 
-        auto sL = high_resolution_clock::now();
-        if (searchMethod == 1)
-            linearSearchLinkedList(llHead, searchBy, minVal, maxVal, targetStr);
-        else if (searchMethod == 3)
-            jumpSearchLinkedList(llHead, searchBy, minVal, maxVal, targetStr);
-        llRuns[r] = duration_cast<microseconds>(high_resolution_clock::now() - sL).count();
-    }
+    arrRuns[r] = duration_cast<microseconds>(high_resolution_clock::now() - sA).count();
 
-    destroyList(llHead);
+    auto sL = high_resolution_clock::now();
+    if (searchMethod == 1)
+        linearSearchLinkedList(llHead, searchBy, minVal, maxVal, targetStr);
+    else if (searchMethod == 2)
+        binarySearchLinkedList(llHead, searchBy, minVal, maxVal, targetStr);
+    else if (searchMethod == 3)
+        jumpSearchLinkedList(llHead, searchBy, minVal, maxVal, targetStr);
 
-    long long llAvg = llSupported ? trimmedAvg(llRuns + 1, BENCH_RUNS - 1) : -1;
-    return {trimmedAvg(arrRuns + 1, BENCH_RUNS - 1), llAvg};
+    llRuns[r] = duration_cast<microseconds>(high_resolution_clock::now() - sL).count();
+} 
+
+destroyList(llHead);
+
+long long llAvg = trimmedAvg(llRuns + 1, BENCH_RUNS - 1);
+return {trimmedAvg(arrRuns + 1, BENCH_RUNS - 1), llAvg};
 }
 
 void executeEmissionSubMenu(Node *cities[], string cityNames[])
@@ -457,8 +462,7 @@ void handleSearchingBenchmark(Resident combinedArr[], Node *cityA, Node *cityB, 
             }
         }
 
-        cout << "\nSelect Searching Algorithm:\n1. Linear Search\n2. Binary Search (Array Only)\n3. Jump Search\nChoice: ";
-        string methodInput = getRawBuffer();
+        cout << "\nSelect Searching Algorithm:\n1. Linear Search\n2. Binary Search\n3. Jump Search\nChoice: ";        string methodInput = getRawBuffer();
         stringstream methodSS(methodInput);
         if (!(methodSS >> searchMethod) || searchMethod < 1 || searchMethod > 3)
         {
@@ -484,19 +488,16 @@ void handleSearchingBenchmark(Resident combinedArr[], Node *cityA, Node *cityB, 
         printArrayResults(displayArr, totalSize, searchBy, minVal, maxVal, targetStr);
 
         string searchNames[] = {"", "Linear Search", "Binary Search", "Jump Search"};
-        bool llSupported = (searchMethod != 2);
+        bool llSupported = true;
 
         cout << "\n================ TASK 7: SEARCHING RESULTS (avg of 5 runs) ===============\n";
         cout << left << setw(20) << "Data Structure" << setw(25) << "Search Type" << setw(25) << "Execution Time (us)" << setw(25) << "Memory Usage (Bytes)" << endl;
         cout << "----------------------------------------------------------------------\n";
         cout << left << setw(20) << "Array" << setw(25) << searchNames[searchMethod] << setw(25) << result.arrayTime << setw(25) << arrayMemory << endl;
-        cout << left << setw(20) << "Linked List" << setw(25) << (llSupported ? searchNames[searchMethod] : "N/A")
-             << setw(25) << (llSupported ? to_string(result.llTime) : "N/A")
-             << setw(25) << (llSupported ? to_string(linkedListMemory) : "N/A") << endl;
+        cout << left << setw(20) << "Linked List" << setw(25) << searchNames[searchMethod]
+             << setw(25) << result.llTime
+             << setw(25) << linkedListMemory << endl;
         cout << "----------------------------------------------------------------------\n";
-
-        if (!llSupported)
-            cout << "\n*Binary Search not supported on Linked List (no random access)\n";
     }
 }
 

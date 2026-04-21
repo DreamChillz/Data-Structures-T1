@@ -720,3 +720,69 @@ void jumpSearchLinkedList(Node *head, int searchBy, double minVal, double maxVal
         scan = scan->next;
     }
 }
+
+// NEW Binary Search for Linked List
+
+Node *middleNode(Node *start, Node *last)
+{
+    if (start == nullptr)
+        return nullptr;
+
+    Node *slow = start;
+    Node *fast = start->next;
+
+    while (fast != last)
+    {
+        fast = fast->next;
+        if (fast != last)
+        {
+            slow = slow->next;
+            fast = fast->next;
+        }
+    }
+    return slow;
+}
+
+int binarySearchLinkedList(Node *head, int searchBy, double minVal, double maxVal, string targetStr)
+{
+    Node *start = head;
+    Node *last = nullptr;
+
+    auto getValue = [&](Node *node) -> double
+    {
+        if (searchBy == 1) return node->data.age;
+        if (searchBy == 2) return node->data.dailyDistance;
+        if (searchBy == 3) return node->data.emissionFactor;
+        if (searchBy == 4) return node->data.avgDaysPerMonth;
+        return 0;
+    };
+
+    while (start != last)
+    {
+        Node *mid = middleNode(start, last);
+        if (!mid) return 0;
+
+        if (searchBy == 5)
+        {
+            if (mid->data.transportMode == targetStr)
+                return 1;
+            else if (mid->data.transportMode < targetStr)
+                start = mid->next;
+            else
+                last = mid;
+        }
+        else
+        {
+            double val = getValue(mid);
+
+            if (val >= minVal && val <= maxVal)
+                return 1;
+            else if (val < minVal)
+                start = mid->next;
+            else
+                last = mid;
+        }
+    }
+
+    return 0;
+}

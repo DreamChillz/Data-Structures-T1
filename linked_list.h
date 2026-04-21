@@ -42,4 +42,7 @@ void jumpSearchLinkedList(Node *head, int searchBy, double minVal, double maxVal
 
 void executeInsightsReport(Node *cityA, Node *cityB, Node *cityC);
 
+Node *middleNode(Node *start, Node *last);
+int binarySearchLinkedList(Node *head, int searchBy, double minVal, double maxVal, string targetStr);
+
 #endif
