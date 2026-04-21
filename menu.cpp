@@ -712,7 +712,11 @@ void executePerformanceComparison(Node *cityA, Node *cityB, Node *cityC)
     totalSize += loadCSV("datasets/dataset3-cityC.csv", combinedArr + totalSize);
 
     size_t arrayMemory = sizeof(Resident) * totalSize;
-    size_t linkedListMemory = sizeof(Node) * totalSize;
+
+    size_t linkedListMemory = 0;
+    linkedListMemory = sizeof(Node) * totalSize;    // struct data
+    linkedListMemory += sizeof(void *) * totalSize; // next pointers already included in sizeof(Node)
+    linkedListMemory += 16 * totalSize;
 
     while (true)
     {
@@ -746,7 +750,6 @@ void executePerformanceComparison(Node *cityA, Node *cityB, Node *cityC)
         }
     }
 }
-
 
 void executeOperationSelection(int dsMode, Node *cityA, Node *cityB, Node *cityC)
 {
